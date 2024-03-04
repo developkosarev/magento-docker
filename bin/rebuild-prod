@@ -1,0 +1,18 @@
+#!/bin/bash
+
+bin/composer install
+
+bin/cli rm -rf generated/*
+bin/cli rm -rf pub/static/*
+bin/cli rm -rf var/view_preprocessed/*
+
+bin/magento maintenance:enable
+bin/magento cache:enable
+bin/magento deploy:mode:set production --skip-compilation
+bin/magento setup:upgrade
+bin/magento setup:di:compile
+bin/magento setup:static-content:deploy en_US de_DE -f --jobs=15 --area=frontend --theme=Diko/Diko --no-parent
+bin/magento setup:static-content:deploy en_US de_DE -f --area=adminhtml --jobs=2 --no-parent --theme Magento/backend
+#bin/magento setup:static-content:deploy en_US de_DE -f --jobs=15
+bin/magento cache:flush
+bin/magento maintenance:disable

@@ -1,0 +1,114 @@
+version: "3"
+
+services:
+  proxy:
+    build: images/proxy
+    ports:
+      - "8443:8443"
+    depends_on:
+      - varnish
+    links:
+      - varnish
+
+  varnish:
+    build: images/varnish
+    ports:
+      - "81:80"
+      - "6082:6082"
+    depends_on:
+      - app
+    links:
+      - app	
+
+  app:
+    #image: markoshust/magento-nginx:1.18-7
+    build: images/nginx
+    ports:
+      - "80:8000"
+      - "443:8443"
+      - "8001:8001"
+    volumes: &appvolumes
+      - ~/.composer:/var/www/.composer:cached
+      - ~/.ssh/id_rsa:/var/www/.ssh/id_rsa:cached
+      - ~/.ssh/known_hosts:/var/www/.ssh/known_hosts:cached
+      #- appdata:/var/www/html
+      - sockdata:/sock
+      - ssldata:/etc/nginx/certs
+    #extra_hosts: &appextrahosts #& it means put to variable https://stackoverflow.com/questions/45805380/meaning-of-ampersand-in-docker-compose-yml-file
+      ## Selenium support, replace "magento.test" with URL of your site
+      #- "magento.test:172.17.0.1"
+    #extra_hosts:
+    #  - "${PLATFORM_DOMAIN}:${PROXY_HOST_IP}"   
+
+  phpfpm:
+    #image: markoshust/magento-php:8.1-fpm-1
+    build: images/php
+    volumes: *appvolumes
+    env_file: env/phpfpm.env
+    #extra_hosts: *appextrahosts
+
+  db:
+    image: mariadb:10.4
+    command:
+      --max_allowed_packet=64M
+      --optimizer_use_condition_selectivity=1
+      --optimizer_switch="rowid_filter=off"
+    ports:
+      - "3306:3306"
+    env_file: env/db.env
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6379:6379"        
+
+  elasticsearch:
+    build: images/elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "discovery.type=single-node"
+      ## Set custom heap size to avoid memory errors
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+      ## Avoid test failures due to small disks
+      ## More info at https://github.com/markshust/docker-magento/issues/488
+      - "cluster.routing.allocation.disk.threshold_enabled=false"
+      - "index.blocks.read_only_allow_delete"
+      - "http.cors.allow-origin=http://localhost:8080"
+      - "http.cors.enabled=true"
+      - "http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+
+  rabbitmq:
+    #image: markoshust/magento-rabbitmq:3.9-0
+    build: images/rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - rabbitmqdata:/var/lib/rabbitmq
+    env_file: env/rabbitmq.env
+  
+
+  ## Blackfire support, uncomment to enable
+  #blackfire:
+  #  image: blackfire/blackfire:2
+  #  ports:
+  #    - "8307"
+  #  env_file: env/blackfire.env
+
+  ## Selenium support, uncomment to enable
+  #selenium:
+  #  image: selenium/standalone-chrome-debug:3.8.1
+  #  ports:
+  #    - "5900:5900"
+  #  extra_hosts: *appextrahosts
+
+volumes:
+  appdata:
+  dbdata:
+  rabbitmqdata:
+  sockdata:
+  ssldata:

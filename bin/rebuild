@@ -1,0 +1,12 @@
+#!/bin/bash
+
+bin/composer install
+
+bin/cli rm -rf generated/*
+bin/cli rm -rf pub/static/*
+bin/cli rm -rf var/view_preprocessed/*
+
+bin/magento setup:upgrade
+bin/magento deploy:mode:set developer
+bin/magento cache:flush
+bin/magento cache:disable block_html full_page layout
