@@ -7,6 +7,8 @@ yellow = $(shell printf "\e[33;01m$1\e[0m")
 red    = $(shell printf "\e[33;31m$1\e[0m")
 
 format = $(shell printf "%-40s %s" "$(call green,bin/$1)" $2)
+format_yellow = $(shell printf "%-40s %s" "$(call yellow,bin/$1)" $2)
+
 
 comma:= ,
 
@@ -64,12 +66,15 @@ help:
 	@echo "$(call format,remove,'Remove all containers.')"
 	@echo "$(call format,removeall,'Remove all containers$(comma) networks$(comma) volumes and images.')"
 	@echo "$(call format,removevolumes,'Remove all volumes.')"
-	@echo "$(call green,-)"	
-	@echo "$(call format,nginx,'docker exec -it magento-lic-app-1 mc')"
-	@echo "$(call format,nginx,'docker compose build app')"
-	@echo "$(call format,nginx,'nginx -t')"
-	@echo "$(call format,nginx,'nginx -s reload')"
-	@echo "$(call format,curl,'curl --header 'Host: magento-lic.local' http://app:8000')"
+	@echo "$(call yellow,-)"
+	@echo "$(call format_yellow,start-kibana,'Start kibana all containers.')"
+	@echo "$(call format_yellow,stop-kibana,'Stop kibana all containers.')"
+	@echo "$(call yellow,-)"
+	@echo "$(call format_yellow,nginx,'docker exec -it magento-lic-app-1 mc')"
+	@echo "$(call format_yellow,nginx,'docker compose build app')"
+	@echo "$(call format_yellow,nginx,'nginx -t')"
+	@echo "$(call format_yellow,nginx,'nginx -s reload')"
+	@echo "$(call format_yellow,curl,'curl --header 'Host: magento-lic.local' http://app:8000')"
 
 bash:
 	@./bin/bash
