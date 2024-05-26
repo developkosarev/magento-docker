@@ -69,6 +69,7 @@ help:
 	@echo "$(call yellow,-)"
 	@echo "$(call format_yellow,start-kibana,'Start kibana all containers.')"
 	@echo "$(call format_yellow,stop-kibana,'Stop kibana all containers.')"
+	@echo "$(call format_yellow,stop-2h.sh magento-lic-elasticvue-1 &,'bin/stop-2h.sh magento-lic-elasticvue-1 &')"
 	@echo "$(call yellow,-)"
 	@echo "$(call format_yellow,nginx,'docker exec -it magento-lic-app-1 mc')"
 	@echo "$(call format_yellow,nginx,'docker compose build app')"
