@@ -67,14 +67,13 @@ help:
 	@echo "$(call format,removeall,'Remove all containers$(comma) networks$(comma) volumes and images.')"
 	@echo "$(call format,removevolumes,'Remove all volumes.')"
 	@echo "$(call yellow,-)"
-	@echo "$(call format_yellow,start-kibana,'Start kibana all containers.')"
-	@echo "$(call format_yellow,stop-kibana,'Stop kibana all containers.')"
+	@echo "$(call format_yellow,start-tools,'Start tools all containers.')"
+	@echo "$(call format_yellow,stop-tools,'Stop tools all containers.')"
 	@echo "$(call format_yellow,stop-2h.sh magento-lic-elasticvue-1 &,'bin/stop-2h.sh magento-lic-elasticvue-1 &')"
 	@echo "$(call yellow,-)"
 	@echo "$(call format_yellow,nginx,'docker exec -it magento-lic-app-1 mc')"
 	@echo "$(call format_yellow,nginx,'docker compose build app')"
-	@echo "$(call format_yellow,nginx,'nginx -t')"
-	@echo "$(call format_yellow,nginx,'nginx -s reload')"
+	@echo "$(call format_yellow,nginx,'nginx -t && -s reload')"	
 	@echo "$(call format_yellow,curl,'curl --header 'Host: magento-lic.local' http://app:8000')"
 
 bash:
