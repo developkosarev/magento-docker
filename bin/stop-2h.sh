@@ -4,4 +4,4 @@
 sleep 1m
 
 # Stop the Docker containers
-docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.dev-kibana.yml stop "$@"
+docker compose -f docker-compose.yml -f docker-compose.dev.yml -f docker-compose.dev-tools.yml stop "$@"

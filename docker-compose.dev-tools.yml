@@ -1,0 +1,19 @@
+version: "3"
+
+services:  
+  elasticvue:
+    image: cars10/elasticvue
+    ports:
+      - "8080:8080"    
+  
+  redisinsight:
+    #redis web client (http://localhost:8010/)
+    image: "redislabs/redisinsight:latest"
+    ports:
+      - "8010:8001"      
+  
+  #k6:
+  #  #image: grafana/k6
+  #  build: images/k6
+  #  volumes:
+  #    - ./src-k6:/var/www/html:cached 
