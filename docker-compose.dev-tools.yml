@@ -1,5 +1,3 @@
-version: "3"
-
 services:  
   elasticvue:
     image: cars10/elasticvue
